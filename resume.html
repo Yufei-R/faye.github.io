@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历 | 任彧飞 Faye Ren</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #111;
+            padding: 50px 60px;
+            border-radius: 12px;
+            border: 1px solid #222;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+        }
+
+        .contact-info {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        .contact-info a {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #222;
+            letter-spacing: 0.1em;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: #ddd;
+            margin: 20px 0 5px;
+        }
+
+        .meta {
+            color: #777;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 4px 0 4px 20px;
+            position: relative;
+            color: #bbb;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        ul li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #444;
+        }
+
+        .bio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 30px;
+        }
+
+        .bio-grid li {
+            padding: 3px 0 3px 20px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px 30px;
+        }
+
+        .skills-grid li {
+            padding: 2px 0 2px 20px;
+            font-size: 0.85rem;
+        }
+
+        .highlight {
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .resume-container {
+                padding: 30px 20px;
+            }
+
+            .bio-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <a href="index.html" class="back-link">← 返回作品集</a>
+
+        <h1>任彧飞</h1>
+        <p style="color: #aaa; font-size: 1.1rem; margin-bottom: 5px;">Faye Ren</p>
+        <div class="contact-info">
+            📧 <a href="mailto:yufeipeonyren@gmail.com">yufeipeonyren@gmail.com</a>
+            &nbsp;·&nbsp; 📱 +86 18124262980
+            &nbsp;·&nbsp; 📍 中国·广州
+        </div>
+
+        <!-- ===== 个人简介 ===== -->
+        <h2>个人简介</h2>
+        <ul class="bio-grid">
+            <li>UBC艺术史学士（后殖民主义与当代艺术方向）</li>
+            <li>辅修博物馆学、考古方法论与文化遗产保护</li>
+            <li>跨领域实践：拍卖运营 / 博物馆教育 / 视觉传播</li>
+            <li>中英双语母语水平 · 基础法语 · 基础北美手语</li>
+            <li>Adobe Creative Suite · QGIS · 视频剪辑</li>
+            <li>独立运营自媒体，累计浏览量 68,000+</li>
+        </ul>
+
+        <!-- ===== 工作经历 ===== -->
+        <h2>工作经历</h2>
+
+        <h3>拍卖运营实习生</h3>
+        <div class="meta">中国嘉德国际拍卖有限公司 · 广州 | 2026.03 – 2026.06</div>
+        <ul>
+            <li>使用 Photoshop/Canva 制作推广海报与活动物料</li>
+            <li>在线拍卖中负责 1,000+ 件拍品的信息录入，100% 准确率</li>
+            <li>独立撰写万字讲稿及配套演示文稿（史前至汉代中国艺术）</li>
+            <li>协助 2026 年香港巴塞尔艺术展 VIP 客户导览与调研</li>
+            <li>策划、剪辑春季拍卖官方宣传视频</li>
+        </ul>
+
+        <h3>季节性零售助理 · 运营支持与视觉陈列</h3>
+        <div class="meta">蔻驰（Tapestry集团）· 温哥华 | 2025.11 – 2026.01</div>
+        <ul>
+            <li>库存管理与线上订单处理</li>
+            <li>维持视觉陈列标准，提升顾客体验</li>
+            <li>协助客流引导、排队管理与政策传达</li>
+        </ul>
+
+        <h3>自由视觉设计师</h3>
+        <div class="meta">温哥华 | 2022 – 至今</div>
+        <ul>
+            <li>设计活动海报、社交媒体物料及教育素材</li>
+            <li>为 TONGART 国际艺术中心、World Hoard Magazine 等客户供稿</li>
+            <li>独立运营自媒体（Lofter/小红书），累计 68,000+ 浏览量</li>
+        </ul>
+
+        <h3>博物馆教育工作与公共项目助理</h3>
+        <div class="meta">东方荟萃艺术学院 · 广州 | 2023</div>
+        <ul>
+            <li>参与沙面岛殖民与后殖民历史遗产研究项目</li>
+            <li>为 100+ 名访客提供中英双语导览（含多国总领事）</li>
+            <li>协助撰写建筑遗产与殖民城市历史导览词</li>
+            <li>参与设计面向香港中学生的艺术主题暑期项目</li>
+        </ul>
+
+        <h3>教学助理与画廊支持人员</h3>
+        <div class="meta">TONGART 国际艺术培训中心 · 广州 | 2019 – 2021</div>
+        <ul>
+            <li>协助绘画、雕塑及数字媒体教育项目</li>
+            <li>协调学生展览，支持画廊布展与空间组织</li>
+            <li>设计展览及教育活动推广海报</li>
+        </ul>
+
+        <!-- ===== 志愿服务 ===== -->
+        <h2>志愿服务</h2>
+        <h3>访客服务、教育与公共项目</h3>
+        <div class="meta">温哥华美术馆 · 温哥华 | 2025</div>
+        <ul>
+            <li>协助访客服务、前台运营与展览导览</li>
+            <li>支持公共项目及特别活动，促进访客参与</li>
+            <li>协助展厅巡视、空间维护与项目后勤</li>
+        </ul>
+
+        <!-- ===== 教育背景 ===== -->
+        <h2>教育背景</h2>
+        <h3>不列颠哥伦比亚大学 (UBC)</h3>
+        <div class="meta">文学学士，主修艺术史 | 2020 – 2024</div>
+        <ul>
+            <li>现代与后现代艺术理论 · 博物馆与考古学 · 酷儿与边缘化艺术史</li>
+            <li>殖民与后殖民时期西班牙与拉丁美洲艺术研究</li>
+        </ul>
+
+        <h3 style="margin-top:15px;">广州誉德莱国际学校</h3>
+        <div class="meta">国际文凭大学预科双语文凭 (IBDP) | 2018 – 2020</div>
+
+        <!-- ===== 专业进修与技能证书 ===== -->
+        <h2>专业进修与技能证书</h2>
+        <ul class="skills-grid">
+            <li>创意写作与批判性阅读 · Open University (2026)</li>
+            <li>急救复苏 (CPR/AED) · disasterready.org (2026)</li>
+            <li>心理急救原则 · 国际医疗救援队 (2026)</li>
+            <li>AWS生成式AI决策者 · 亚马逊云服务 (2026)</li>
+            <li>濒危考古学：卫星遥感与文化遗产保护 · 杜伦大学 (2026)</li>
+            <li>进阶考古学：卫星遥感应用 · 杜伦大学 (2026, 进行中)</li>
+        </ul>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; text-align: center; color: #555; font-size: 0.8rem;">
+            <p>© 2026 任彧飞 · 更新于 2026年9月</p>
+        </div>
+    </div>
+</body>
+</html>
