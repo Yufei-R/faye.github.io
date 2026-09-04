@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fear Variants — 恐惧变异体</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Fear Variants</h1>
+  <p class="subtitle">恐惧变异体：一种 dread 的病理学</p>
+  <p class="desc">
+    从有形的实体到无形的概念，起源于求生本能的恐惧<br>
+    随着人生命阶段的历程而分化为形形色色的衍生情感。
+  </p>
+</header>
+
+<div class="container">
+  <div class="river-area">
+    <!-- viewBox: wide enough for horizontal wiggle, tall enough for 19 nodes stacked -->
+    <svg id="river-svg" viewBox="0 0 900 4200" preserveAspectRatio="xMidYMin meet">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <path id="river-glow" class="river-glow" d="" stroke="#ffffff"/>
+      <path id="river-main" class="river-main" d="" stroke="#ffffff"/>
+      <g id="mutations"></g>
+      <g id="nodes"></g>
+    </svg>
+
+    <div class="legend">
+      <div class="legend-title">恐惧层面</div>
+      <div class="legend-item"><span>本能 → 自然 → 生存 → 社会秩序 → 神圣秩序 → 宿命 → 政治 → 肉体 → 宗教 → 制度 → 社会 → 知识 → 心理 → 哲学 → 超真实</span></div>
+    </div>
+  </div>
+
+  <aside class="detail-panel" id="detail-panel">
+    <div class="panel-empty">
+      <p>选择一个恐惧节点以查看解剖报告</p>
+      <p style="font-size:1.5rem;margin-top:1rem;opacity:0.5">点击河流上的节点</p>
+    </div>
+  </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
