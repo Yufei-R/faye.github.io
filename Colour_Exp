@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字爆炸拖尾效果 · p5.js</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1e1e1e;
+        }
+        canvas {
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(6px);
+            color: #eee;
+            padding: 18px 28px;
+            border-radius: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px 30px;
+            border: 1px solid #444;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .control-panel > div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+        .control-panel label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ccc;
+        }
+        .control-panel input[type="range"] {
+            width: 100px;
+            height: 4px;
+            background: #555;
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .control-panel input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffaa66;
+            cursor: pointer;
+            border: 1px solid #ffcc99;
+        }
+        .control-panel span {
+            min-width: 32px;
+            text-align: center;
+            color: #ffaa66;
+            font-weight: 600;
+        }
+        .control-panel .title {
+            color: #aaa;
+            letter-spacing: 1px;
+            font-weight: 300;
+            margin-right: 6px;
+        }
+        @media (max-width: 720px) {
+            .control-panel {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                border-radius: 30px;
+                padding: 16px 24px;
+                bottom: 16px;
+                width: 90%;
+            }
+            .control-panel > div {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 控制条 (实时调节参数) -->
+    <div class="control-panel">
+        <div>
+            <span class="title">💥 速率</span>
+            <input type="range" id="rateSlider" min="0.1" max="3.0" step="0.05" value="0.9">
+            <span id="rateVal">0.9</span>
+        </div>
+        <div>
+            <span class="title">📏 大小</span>
+            <input type="range" id="sizeSlider" min="10" max="100" step="1" value="45">
+            <span id="sizeVal">45</span>
+        </div>
+        <div>
+            <span class="title">⚡ 强度</span>
+            <input type="range" id="powerSlider" min="2" max="20" step="0.5" value="9">
+            <span id="powerVal">9</span>
+        </div>
+    </div>
+
+    <!-- p5.js 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <script>
+        // ============================================================
+        //  预设文字 & 全局参数
+        // ============================================================
+        const SOURCE_TEXT = "炸 开 文 字 拖 尾 效 果 ✦ p5 • js 随 机 排 列 飞 行 绚 烂";
+        // 用于拆分成单个字符（包括空格和标点）
+        const charArray = SOURCE_TEXT.split('');
+
+        // 六色随机填充 (高饱和、高亮)
+        const COLOR_PALETTE = [
+            [255, 100, 100], // 红
+            [100, 255, 120], // 绿
+            [100, 200, 255], // 蓝
+            [255, 220, 80],  // 黄
+            [255, 140, 200], // 粉
+            [180, 130, 255]  // 紫
+        ];
+
+        // ---------- 可调参数 (与滑块联动) ----------
+        let params = {
+            rate: 0.9,        // 爆炸出现速率 (每帧新增爆炸圆概率)
+            blastRadius: 45,  // 爆炸影响范围 (圆形半径)
+            intensity: 9      // 爆炸强度 (位移幅度)
+        };
+
+        // ---------- 画布尺寸 ----------
+        const W = 600;
+        const H = 800;
+
+        // ---------- 文字网格数据 ----------
+        let gridItems = [];          // 所有文字单元 { x, y, char, color, baseX, baseY, vx, vy, trail }
+        let cols = 0, rows = 0;      // 网格列/行数 (根据字号动态计算)
+        let fontSize = 28;           // 字号 (可修改)
+        let letterSpacing = 1.2;     // 字距比例 (相对于字号)
+        let lineHeight = 1.4;        // 行距比例 (相对于字号)
+
+        // ---------- 爆炸状态 ----------
+        let blastZones = [];         // 活跃爆炸圆 { cx, cy, radius, power, life }
+
+        // ============================================================
+        //  p5 核心函数
+        // ============================================================
+
+        function setup() {
+            createCanvas(W, H);
+            textAlign(CENTER, CENTER);
+            textFont('sans-serif');
+            background(0);
+
+            // 构建文字网格 (根据当前字号/字距/行距)
+            rebuildGrid();
+
+            // 滑块事件绑定 (实时更新参数 & 重建网格)
+            const rateSlider = document.getElementById('rateSlider');
+            const sizeSlider = document.getElementById('sizeSlider');
+            const powerSlider = document.getElementById('powerSlider');
+
+            rateSlider.addEventListener('input', function() {
+                params.rate = parseFloat(this.value);
+                document.getElementById('rateVal').textContent = params.rate.toFixed(1);
+            });
+            sizeSlider.addEventListener('input', function() {
+                params.blastRadius = parseFloat(this.value);
+                document.getElementById('sizeVal').textContent = params.blastRadius.toFixed(0);
+            });
+            powerSlider.addEventListener('input', function() {
+                params.intensity = parseFloat(this.value);
+                document.getElementById('powerVal').textContent = params.intensity.toFixed(1);
+            });
+
+            // 额外：字号/字距/行距 可通过键盘或直接修改代码，此处不额外加滑块
+            // 但为了方便演示，在draw中按 'f' 'l' 'h' 可微调 (详见 keyPressed)
+        }
+
+        // ============================================================
+        //  重建网格 (根据当前字号、字距、行距)
+        // ============================================================
+        function rebuildGrid() {
+            gridItems = [];
+            blastZones = [];   // 重置爆炸区域 (避免旧爆炸影响新网格)
+
+            // 计算每个字符的宽高 (近似)
+            const charW = fontSize * letterSpacing;
+            const charH = fontSize * lineHeight;
+
+            // 计算可容纳的列/行数 (留边距)
+            const marginX = 20;
+            const marginY = 20;
+            cols = Math.floor((width - marginX * 2) / charW);
+            rows = Math.floor((height - marginY * 2) / charH);
+
+            // 如果文字太少，至少保证1列1行
+            if (cols < 1) cols = 1;
+            if (rows < 1) rows = 1;
+
+            // 实际起始偏移 (居中对齐)
+            const totalW = cols * charW;
+            const totalH = rows * charH;
+            const startX = (width - totalW) / 2 + charW / 2;
+            const startY = (height - totalH) / 2 + charH / 2;
+
+            // 遍历网格，分配字符 (循环使用 charArray)
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    // 循环取字符
+                    const idx = (r * cols + c) % charArray.length;
+                    const ch = charArray[idx];
+
+                    // 位置 (网格对齐)
+                    const x = startX + c * charW;
+                    const y = startY + r * charH;
+
+                    // 随机六色之一 (每个字符独立)
+                    const colIdx = Math.floor(random(COLOR_PALETTE.length));
+                    const colorRGB = COLOR_PALETTE[colIdx];
+
+                    gridItems.push({
+                        char: ch,
+                        baseX: x,
+                        baseY: y,
+                        x: x,
+                        y: y,
+                        color: colorRGB,
+                        vx: 0,
+                        vy: 0,
+                        // 拖尾数据：存储最近若干位置 (用于绘制残影)
+                        trail: []
+                    });
+                }
+            }
+        }
+
+        // ============================================================
+        //  draw 循环
+        // ============================================================
+        function draw() {
+            background(0);
+
+            // ----- 1. 随机生成爆炸 (速率可控) -----
+            if (random(1) < params.rate * 0.08) {  // 调节概率基数，使速率滑块更灵敏
+                // 随机爆炸位置 (在画布内偏中心一点，也可全屏)
+                const cx = random(width * 0.1, width * 0.9);
+                const cy = random(height * 0.1, height * 0.9);
+                // 半径使用滑块值，并加入随机抖动 (±20%)
+                const r = params.blastRadius * random(0.7, 1.3);
+                // 强度使用滑块值，并加入随机变化 (0.8~1.2)
+                const p = params.intensity * random(0.7, 1.4);
+                // 生命周期 (帧数) 影响拖尾长度
+                const life = 50 + floor(random(30));
+                blastZones.push({
+                    cx, cy,
+                    radius: r,
+                    power: p,
+                    life: life,
+                    maxLife: life
+                });
+            }
+
+            // ----- 2. 更新爆炸区域 (衰减) 并 施加力 -----
+            // 先更新所有爆炸的生命值，移除已死亡的
+            for (let i = blastZones.length - 1; i >= 0; i--) {
+                const b = blastZones[i];
+                b.life--;
+                if (b.life <= 0) {
+                    blastZones.splice(i, 1);
+                }
+            }
+
+            // 对每个文字单元，计算所有爆炸的影响 (叠加)
+            for (let item of gridItems) {
+                // 重置速度 (每次重新计算爆炸力)
+                item.vx = 0;
+                item.vy = 0;
+
+                // 累加每个爆炸的推力 (强度随距离衰减)
+                for (let b of blastZones) {
+                    const dx = item.baseX - b.cx;
+                    const dy = item.baseY - b.cy;
+                    const dist = sqrt(dx*dx + dy*dy);
+                    // 在半径内才施加力
+                    if (dist < b.radius) {
+                        // 距离越近，力越强 (线性衰减)
+                        const strength = map(dist, 0, b.radius, 1.0, 0.0);
+                        // 方向: 从爆炸中心指向文字 (单位向量)
+                        const angle = atan2(dy, dx);
+                        // 力度 = 强度 * 衰减 * 随机扰动 (让运动更自然)
+                        const forceMag = b.power * strength * random(0.85, 1.15);
+                        item.vx += cos(angle) * forceMag;
+                        item.vy += sin(angle) * forceMag;
+                    }
+                }
+
+                // 更新位置 (加上速度)
+                item.x += item.vx;
+                item.y += item.vy;
+
+                // 边界阻尼 (防止跑太远，同时产生回弹效果)
+                const damping = 0.96;
+                item.vx *= damping;
+                item.vy *= damping;
+
+                // 拖尾记录 (最多保留25个位置)
+                item.trail.push({ x: item.x, y: item.y });
+                if (item.trail.length > 25) {
+                    item.trail.shift();
+                }
+
+                // 轻微向原位回归 (让文字最终慢慢复原)
+                item.x += (item.baseX - item.x) * 0.006;
+                item.y += (item.baseY - item.y) * 0.006;
+            }
+
+            // ----- 3. 绘制所有文字 (包含拖尾) -----
+            // 为了拖尾效果更明显，先绘制所有拖尾 (半透明)
+            for (let item of gridItems) {
+                const trail = item.trail;
+                const len = trail.length;
+                if (len < 2) continue;
+
+                // 拖尾绘制: 从旧到新，透明度逐渐增加
+                for (let i = 0; i < len - 1; i++) {
+                    const p1 = trail[i];
+                    const p2 = trail[i+1];
+                    // 透明度: 越靠近尾端越透明 (i 越小越旧)
+                    const alpha = map(i, 0, len - 1, 20, 180);
+                    // 大小: 拖尾逐渐变小
+                    const sz = map(i, 0, len - 1, fontSize * 0.4, fontSize * 0.9);
+                    // 颜色继承 (但加一点亮度变化)
+                    const [r, g, b] = item.color;
+                    fill(r, g, b, alpha);
+                    noStroke();
+                    textSize(sz);
+                    textAlign(CENTER, CENTER);
+                    // 在两点之间绘制字符 (使用当前字符)
+                    // 为了更丰富，可以在两点之间绘制多个字符，但此处简化，只绘制在p2位置
+                    // 但为了拖尾丝滑，在p2位置绘制 (叠加)
+                    text(item.char, p2.x, p2.y);
+                }
+            }
+
+            // 再绘制主文字 (清晰不透明)
+            for (let item of gridItems) {
+                const [r, g, b] = item.color;
+                fill(r, g, b, 255);
+                noStroke();
+                textSize(fontSize);
+                textAlign(CENTER, CENTER);
+                text(item.char, item.x, item.y);
+            }
+
+            // ----- 辅助可视化: 显示爆炸圈 (调试可关闭) -----
+            // 画一些半透明爆炸指示 (可选)
+            noFill();
+            stroke(255, 80, 80, 40);
+            strokeWeight(1);
+            for (let b of blastZones) {
+                const lifeRatio = b.life / b.maxLife;
+                const r = b.radius * (0.4 + 0.6 * lifeRatio);
+                ellipse(b.cx, b.cy, r*2, r*2);
+            }
+
+            // 绘制信息 (当前文字数量 & 爆炸数)
+            fill(180, 180, 200, 100);
+            noStroke();
+            textSize(12);
+            textAlign(LEFT, TOP);
+            text(`文字数: ${gridItems.length}  |  爆炸区: ${blastZones.length}`, 12, 12);
+        }
+
+        // ============================================================
+        //  键盘快捷操作 (调整字号/字距/行距，重建网格)
+        // ============================================================
+        function keyPressed() {
+            // 按 'f' 增大字号，按 'F' 减小字号
+            if (key === 'f' || key === 'F') {
+                const step = (key === 'f') ? 2 : -2;
+                fontSize = constrain(fontSize + step, 12, 64);
+                rebuildGrid();
+                // 提示 (在控制台)
+                console.log(`字号: ${fontSize}`);
+                return;
+            }
+            // 字距 'l' / 'L'
+            if (key === 'l' || key === 'L') {
+                const step = (key === 'l') ? 0.05 : -0.05;
+                letterSpacing = constrain(letterSpacing + step, 0.6, 2.0);
+                rebuildGrid();
+                console.log(`字距: ${letterSpacing.toFixed(2)}`);
+                return;
+            }
+            // 行距 'h' / 'H'
+            if (key === 'h' || key === 'H') {
+                const step = (key === 'h') ? 0.05 : -0.05;
+                lineHeight = constrain(lineHeight + step, 0.8, 2.4);
+                rebuildGrid();
+                console.log(`行距: ${lineHeight.toFixed(2)}`);
+                return;
+            }
+            // 按 'r' 重置所有爆炸
+            if (key === 'r' || key === 'R') {
+                blastZones = [];
+                // 同时复位文字位置 (平滑归位)
+                for (let item of gridItems) {
+                    item.x = item.baseX;
+                    item.y = item.baseY;
+                    item.vx = 0;
+                    item.vy = 0;
+                    item.trail = [];
+                }
+                console.log('重置爆炸 & 文字归位');
+                return;
+            }
+        }
+
+        // 窗口大小自适应 (保持比例)
+        function windowResized() {
+            // 固定画布尺寸，不做缩放
+        }
+
+        // 额外: 鼠标点击也可产生爆炸 (增强交互)
+        function mousePressed() {
+            // 在鼠标位置生成一个爆炸
+            const cx = mouseX;
+            const cy = mouseY;
+            const r = params.blastRadius * random(0.8, 1.4);
+            const p = params.intensity * random(0.8, 1.5);
+            blastZones.push({
+                cx, cy,
+                radius: r,
+                power: p,
+                life: 60 + floor(random(30)),
+                maxLife: 90
+            });
+            // 阻止默认
+            return false;
+        }
+
+        // 说明 (在画布上显示提示)
+        function draw() {
+            // 已在主draw中绘制，额外提示放在setup后
+        }
+
+        // 额外初始化提示
+        console.log('🔹 快捷键:  f/F 调整字号  |  l/L 调整字距  |  h/H 调整行距  |  r 重置爆炸');
+        console.log('🔹 点击鼠标产生爆炸  |  滑块控制速率/范围/强度');
+    </script>
+</body>
+</html>
