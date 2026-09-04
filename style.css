@@ -1,0 +1,306 @@
+/* 全局重置 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Compact Header ===== */
+header {
+  text-align: center;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+header h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+header .subtitle {
+  font-family: 'Courier New', monospace;
+  color: rgba(255,255,255,0.7);
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+}
+header .desc {
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+/* ===== Layout ===== */
+.container {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ===== River Area — scrollable vertically ===== */
+.river-area {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#river-svg {
+  width: 100%;
+  min-height: 100%;
+  display: block;
+}
+
+/* ===== River Paths ===== */
+.river-glow {
+  fill: none;
+  stroke-width: 16;
+  opacity: 0.12;
+  filter: blur(8px);
+}
+.river-main {
+  fill: none;
+  stroke-width: 2;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: flow 22s linear infinite;
+}
+@keyframes flow {
+  0% { stroke-dashoffset: 2000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* ===== Nodes ===== */
+.node { cursor: pointer; }
+.node-circle {
+  fill: #000;
+  stroke: #fff;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+.node:hover .node-circle {
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.6));
+  stroke-width: 3;
+}
+.node-pulse {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  opacity: 0.12;
+}
+.node-label {
+  font-family: 'Courier New', 'Noto Sans SC', monospace;
+  font-size: 14px;
+  fill: #fff;
+  text-anchor: middle;
+  pointer-events: none;
+  opacity: 0.85;
+  text-shadow: 0 0 4px #000, 0 0 8px #000, 0 1px 2px #000;
+  transition: opacity 0.3s;
+}
+.node:hover .node-label { opacity: 1; }
+.node-num {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  fill: #fff;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* ===== Mutation Labels ===== */
+.mut-label {
+  font-family: 'Courier New', 'Noto Sans SC', monospace;
+  font-size: 11px;
+  fill: rgba(255,255,255,0.45);
+  text-anchor: middle;
+  pointer-events: none;
+}
+.mut-line {
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+/* ===== Detail Panel — overlay on right, fixed position ===== */
+.detail-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  background: rgba(5,5,5,0.94);
+  border-left: 1px solid rgba(255,255,255,0.12);
+  padding: 1.25rem;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.detail-panel.active { transform: translateX(0); }
+
+.panel-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.panel-close:hover {
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.08);
+}
+
+.panel-empty {
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  margin-top: 50%;
+  font-size: 0.9rem;
+}
+
+/* ===== Panel Content ===== */
+.detail-era {
+  font-family: 'Courier New', 'Noto Sans SC', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.4rem;
+}
+.detail-title {
+  font-family: Georgia, 'Times New Roman', 'Noto Sans SC', serif;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.depth-wrap { margin-bottom: 1rem; }
+.depth-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.3rem;
+  font-family: 'Courier New', monospace;
+}
+.depth-track {
+  height: 3px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px;
+  position: relative;
+}
+.depth-marker {
+  position: absolute;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+  transform: translateX(-50%);
+  transition: left 0.5s ease;
+}
+
+.mutation-path {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.8rem 0 1rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.mutation-path .arrow { color: rgba(255,255,255,0.4); font-family: 'Courier New', monospace; }
+
+.section { margin-bottom: 1rem; }
+.section h4 {
+  font-family: 'Courier New', 'Noto Sans SC', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.section h4::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.section p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.8);
+  margin: 0;
+}
+
+.detail-quote {
+  font-family: Georgia, 'Times New Roman', 'Noto Sans SC', serif;
+  font-style: italic;
+  border-left: 2px solid rgba(255,255,255,0.3);
+  padding-left: 0.8rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.65);
+}
+
+/* ===== Legend ===== */
+.legend {
+  position: fixed;
+  bottom: 0.8rem;
+  left: 0.8rem;
+  background: rgba(0,0,0,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  z-index: 10;
+  max-width: 340px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+.legend-title {
+  font-family: 'Courier New', 'Noto Sans SC', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.65rem;
+}
+.legend-item span { color: rgba(255,255,255,0.6); line-height: 1.4; font-size: 0.75rem; }
