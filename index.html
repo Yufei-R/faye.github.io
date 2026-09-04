@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扑棱蛾子飞飞 | Faye Ren</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            letter-spacing: 0.05em;
+        }
+
+        /* Bio */
+        .bio {
+            max-width: 600px;
+            margin: 0 auto 80px;
+            text-align: center;
+        }
+
+        .bio-en {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        .bio-cn {
+            font-size: 0.95rem;
+            color: #999;
+            line-height: 1.8;
+        }
+
+        /* Section title */
+        .section-title {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 40px;
+            letter-spacing: 0.2em;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: "—";
+            color: #444;
+            margin: 0 15px;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #1a1a1a;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Contact */
+        .contact {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .contact-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .contact-list a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .contact-list a:hover {
+            color: #fff;
+        }
+
+        .contact-icon {
+            margin-right: 8px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #222;
+            color: #555;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 40px 15px;
+            }
+
+            header {
+                padding: 60px 0 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>扑棱蛾子飞飞</h1>
+            <p class="subtitle">Faye Ren · 任彧飞</p>
+        </header>
+
+        <section class="bio">
+            <p class="bio-en">I make colourful, weird things.</p>
+            <p class="bio-cn">
+                不列颠哥伦比亚大学（UBC）艺术史学士，主修后殖民主义艺术史与当代艺术，辅修博物馆学、考古方法论与文化遗产保护。先后在中国嘉德拍卖行、温哥华美术馆、蔻驰奢侈品零售及广州东方荟萃艺术学院等机构积累跨领域实践经验，涵盖拍卖运营、博物馆公共教育与视觉传播。具备国际化视野，拥有公关接待、展览策划、跨文化沟通及学术内容公众化转化的综合能力。
+            </p>
+        </section>
+
+        <h2 class="section-title">作品</h2>
+
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="art1.jpg" alt="插画作品 1">
+            </div>
+            <div class="gallery-item">
+                <img src="art2.jpg" alt="插画作品 2">
+            </div>
+            <div class="gallery-item">
+                <img src="art3.jpg" alt="插画作品 3">
+            </div>
+            <div class="gallery-item">
+                <img src="art4.jpg" alt="插画作品 4">
+            </div>
+        </div>
+
+        <h2 class="section-title">联系</h2>
+
+        <section class="contact">
+            <ul class="contact-list">
+                <li>
+                    <a href="https://www.xiaohongshu.com/user/profile/60ed06fe000000000101e3d2" target="_blank">
+                        <span class="contact-icon">📕</span>小红书：扑棱蛾子飞飞
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:yufeipeonyren@gmail.com">
+                        <span class="contact-icon">📧</span>yufeipeonyren@gmail.com
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:yufeiren6986@qq.com">
+                        <span class="contact-icon">📧</span>yufeiren6986@qq.com
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>© 2026 Yu Fei Ren</p>
+        </footer>
+    </div>
+</body>
+</html>
