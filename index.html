@@ -80,10 +80,11 @@
             margin: 0 15px;
         }
 
-        /* Gallery */
+        /* Gallery - 错落布局 */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: 200px;
             gap: 20px;
             margin-bottom: 80px;
         }
@@ -93,7 +94,6 @@
             overflow: hidden;
             border-radius: 8px;
             background: #1a1a1a;
-            aspect-ratio: 1;
         }
 
         .gallery-item img {
@@ -101,10 +101,44 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
+            display: block;
         }
 
         .gallery-item:hover img {
             transform: scale(1.03);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            font-size: 0.85rem;
+            color: #ccc;
+            letter-spacing: 0.05em;
+        }
+
+        /* 布局定义 */
+        .item-1 {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .item-2 {
+            grid-column: span 4;
+            grid-row: span 2;
+        }
+
+        .item-3 {
+            grid-column: span 3;
+            grid-row: span 2;
+        }
+
+        .item-4 {
+            grid-column: span 3;
+            grid-row: span 2;
         }
 
         /* Contact */
@@ -146,7 +180,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
@@ -157,6 +191,21 @@
 
             header {
                 padding: 60px 0 40px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                grid-auto-rows: auto;
+            }
+
+            .item-1, .item-2, .item-3, .item-4 {
+                grid-column: span 1;
+                grid-row: span 1;
+                aspect-ratio: 4/3;
+            }
+
+            .item-1 {
+                aspect-ratio: 1;
             }
         }
     </style>
@@ -178,17 +227,19 @@
         <h2 class="section-title">作品</h2>
 
         <div class="gallery">
-            <div class="gallery-item">
+            <div class="gallery-item item-1">
                 <img src="art1.jpg" alt="插画作品 1">
             </div>
-            <div class="gallery-item">
+            <div class="gallery-item item-2">
                 <img src="art2.jpg" alt="插画作品 2">
             </div>
-            <div class="gallery-item">
-                <img src="art3.jpg" alt="插画作品 3">
+            <div class="gallery-item item-3">
+                <img src="art3.jpg" alt="A Nightmare Lose Control">
+                <div class="gallery-caption">A Nightmare Lose Control</div>
             </div>
-            <div class="gallery-item">
-                <img src="art4.jpg" alt="插画作品 4">
+            <div class="gallery-item item-4">
+                <img src="art4.jpg" alt="Passion?">
+                <div class="gallery-caption">Passion?</div>
             </div>
         </div>
 
